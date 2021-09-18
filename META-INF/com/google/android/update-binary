@@ -24,7 +24,7 @@ print_info() {
   ui_print "   recovery不支持4G以上zip解决方案  "
   ui_print "   Ver 1.2"
   ui_print "     "
-  ui_print "   By: ACDBFFF && yanbuyu"
+  ui_print "   By: SK && yanbuyu"
   ui_print "     "
   ui_print "****************************************"
   ui_print "   安装中...       "
