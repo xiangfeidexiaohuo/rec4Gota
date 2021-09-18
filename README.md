@@ -2,11 +2,13 @@
 
 
 
-### 灵感来源于[android/platform/bootable/recovery/f087dfb/./updater/updater.c](https://android.googlesource.com/platform/bootable/recovery/+/f087dfb/updater/updater.c)
+#### 灵感来源于[android/platform/bootable/recovery/f087dfb/./updater/updater.c](https://android.googlesource.com/platform/bootable/recovery/+/f087dfb/updater/updater.c)
 
 
-### 一个简单的小脚本，解决TWRP不能刷超过4G ROM的问题。
+#### 一个简单的小补丁，解决TWRP不能刷超过4G ROM的问题。
 
+
+***
 
 ### 用法：
 
@@ -36,6 +38,10 @@ ps：
 
 ![png](./pic/3.png)
 
+遇到挂载失败，重启twrp！
+
+
+***
 
 ### 贡献
 
