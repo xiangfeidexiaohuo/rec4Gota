@@ -15,14 +15,19 @@ ui_print() {
 }
 
 space_print() {
-    ui_print "  "
-    ui_print "  "
+  ui_print "  "
+  ui_print "  "
+}
+
+warnning() {
+  ui_print "- 提示: $1文件不存在，不兼容～"
+  ui_print "- 请创建文件：$1 并写入刷机包路径～"
 }
 
 print_info() {
   ui_print "****************************************"
   ui_print "   recovery不支持4G以上zip解决方案  "
-  ui_print "   Ver 1.2"
+  ui_print "   Ver 1.3"
   ui_print "     "
   ui_print "   By: SK && yanbuyu"
   ui_print "     "
@@ -53,10 +58,15 @@ unzip -o "$ZIPFILE" 'tool/7za' -d $TMPDIR >&2
 chmod +x $_7ZA
 
 if [[ ! -f "$ZIP_TXT_PATH" ]]; then
-  ui_print "- Ota.txt: 文件不存在，不兼容～"
-  ui_print "   请创建文件：/sdcard/ota.txt 并写入刷机包路径～"
-  exit 1
+  warnning $ZIP_TXT_PATH
+  ZIP_TXT_PATH="/usb-otg/ota.txt"
+  ui_print "- 尝试读取$ZIP_TXT_PATH文件"
+  if [[ ! -f "$ZIP_TXT_PATH" ]]; then
+    warnning $ZIP_TXT_PATH
+    exit 1
+  fi
 fi
+  
 
 ##读取zip包列表
 ZIP_FILES=`cat $ZIP_TXT_PATH | sed -r "s/^[[:space:]]+//g;s/[[:space:]]+$//g" | sed -r "/^#/d" | sed "/^$/d" | sed -r 's/^\/storage\/emulated\/0\//\/sdcard\//g'`
