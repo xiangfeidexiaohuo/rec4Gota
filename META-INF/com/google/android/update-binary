@@ -1,0 +1,101 @@
+#!/sbin/sh
+
+umask 022
+
+FD=$2
+OUTFD=/proc/self/fd/$FD;
+ZIPFILE=$3
+
+ui_print() {
+  until [ ! "$1" ]; do
+    echo "ui_print $1
+      ui_print" >> $OUTFD;
+    shift;
+  done;
+}
+
+space_print() {
+    ui_print "  "
+    ui_print "  "
+}
+
+print_info() {
+  ui_print "****************************************"
+  ui_print "   recovery不支持4G以上zip解决方案  "
+  ui_print "   Ver 1.2"
+  ui_print "     "
+  ui_print "   By: ACDBFFF && yanbuyu"
+  ui_print "     "
+  ui_print "****************************************"
+  ui_print "   安装中...       "
+  ui_print "****************************************"
+  space_print
+}
+
+#一些变量
+TMPDIR=/dev/ota
+TOOL_PATH=$TMPDIR/tool
+_7ZA=$TOOL_PATH/7za
+UBINPATH="META-INF/com/google/android/update-binary"
+U_BIN=update-binary
+
+ZIP_TXT_PATH="/sdcard/ota.txt"
+
+rm -rf $TMPDIR 2>/dev/null
+mkdir -p $TMPDIR
+
+print_info
+
+ui_print "- 开始"
+
+#提取7za
+unzip -o "$ZIPFILE" 'tool/7za' -d $TMPDIR >&2
+chmod +x $_7ZA
+
+if [[ ! -f "$ZIP_TXT_PATH" ]]; then
+  ui_print "- Ota.txt: 文件不存在，不兼容～"
+  ui_print "   请创建文件：/sdcard/ota.txt 并写入刷机包路径～"
+  exit 1
+fi
+
+##读取zip包列表
+ZIP_FILES=`cat $ZIP_TXT_PATH | sed -r "s/^[[:space:]]+//g;s/[[:space:]]+$//g" | sed -r "/^#/d" | sed "/^$/d" | sed -r 's/^\/storage\/emulated\/0\//\/sdcard\//g'`
+
+for ZIP_FILE in $ZIP_FILES;do
+  if [[ ! -f "$ZIP_FILE" ]]; then
+    ui_print "- 提示: ${ZIP_FILE}文件不存在，不兼容～"
+    continue;
+  else
+    ui_print "- 提示: ${ZIP_FILE}即将刷入..."
+  fi
+
+  #清除现有的update-binary
+  rm -f $TOOL_PATH/$U_BIN
+
+  #使用7za提取大于4G的zip包中的update-binary
+  $_7ZA e -y $ZIP_FILE -o$TOOL_PATH $UBINPATH >&2
+  chmod +x $TOOL_PATH/$U_BIN
+
+  #判断update-binary是否存在，从而决定是否刷入zip
+  if [[ -f "$TOOL_PATH/$U_BIN" ]];then
+    #判断update-binary是否为二进制文件
+    IS_BIN=$(sed -n "1p" $TOOL_PATH/$U_BIN | grep "ELF")
+    if [ "$IS_BIN" ];then
+      #使用update-binary刷zip，3个参数：版本[1,2,3] 管道[FD] zip文件路径
+      $TOOL_PATH/$U_BIN 3 $FD $ZIP_FILE
+      space_print
+    else
+      #直接执行脚本
+      sh $TOOL_PATH/$U_BIN "dummy" "1" $ZIP_FILE
+      space_print
+    fi
+  else
+    ui_print "- 提示: ${ZIP_FILE}不支持被刷入..."
+    space_print
+  fi
+done
+
+rm -rf $TMPDIR 2>/dev/null
+
+ui_print "- 完成"
+exit 0
