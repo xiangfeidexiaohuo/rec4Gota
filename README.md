@@ -7,10 +7,15 @@
 
 #### 一个简单的小补丁，解决TWRP不能刷超过4G ROM的问题。
 
+ * 比如最近小米10Pro、10U这种超过4G的官方包。
+ 
  * 当然没超过4G的ROM也可以用这种方法刷，只不过没必要而已！
 
-
+ * 不支持10s、小米11这种payload.bin格式的包。
+ 
 #### 更新日志：
+
+* 1.4：完善说明。
 
 * 1.3：支持usb-otg！
 
@@ -21,7 +26,7 @@
 
 ### 科普下何为超过4G：
 
- * 请用电脑查看大小，比如下图，10S的包就超过 4G了，K40没超过。
+ * 请用电脑查看大小，比如下图，10Pro的包就超过 4G了，K40没超过。
 
 ![png](./pic/01.png)
 
@@ -48,7 +53,7 @@
 
 #### 2.sdcard根目录或者otg设备根目录建立ota.txt，书写内容示例：
 ```
-/sdcard/miui_THYME_21.9.17_411bcbbac6_11.0.zip
+/sdcard/miui_CMI_21.9.17_1c6ed0daa1_11.0.zip
 /sdcard/magisk.zip
 
 ```
@@ -58,7 +63,7 @@
 
  * 若你要把ROM放在otg设备里，那么ota.txt书写内容示例：
 ```
-/usb-otg/miui_THYME_21.9.17_411bcbbac6_11.0.zip
+/usb-otg/miui_CMI_21.9.17_1c6ed0daa1_11.0.zip
 /usb-otg/magisk.zip
 
 ```
